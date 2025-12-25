@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Study Sprint</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#4c6fff">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        'name': 'Study Sprint',
+        'short_name': 'Sprint',
+        'start_url': '/',
+        'display': 'standalone',
+        'background_color': '#060714',
+        'theme_color': '#4c6fff',
+        'icons': [{'src': 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9Ijk2IiBjeT0iOTYiIHI9Ijk2IiBmaWxsPSIjNGM2ZmZmIi8+Cjx0ZXh0IHg9Ijk2IiB5PSIxMDYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmYiPlM8L3RleHQ+Cjwvc3ZnPg==','sizes': '192x192','type': 'image/png'}]
+    }">
+
+    <style>
+        /* Your existing CSS remains exactly the same - all styles preserved */
+        :root {
+            --primary: #718cf8;
+            --primary-dark: #3a50ce;
+            --bg: #060714;
+            --card-bg: rgba(16, 18, 40, 0.9);
+            --text-main: #f9fbff;
+            --text-muted: #bcbedd;
+            --accent: #18e0c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            background: radial-gradient(circle at top left, #1a1c3f, #020314 55%, #000000);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 20px 60px;
+        }
+
+        /* ---------- Header ---------- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(18px);
+            background: linear-gradient(
+                120deg,
+                rgba(3, 5, 25, 0.85),
+                rgba(6, 9, 40, 0.85)
+            );
+            animation: headerDrop 0.7s ease-out forwards;
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        @keyframes headerDrop {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .icon_area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon_wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: radial-gradient(circle at 20% 0, #fff, #8ab4ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(72, 115, 255, 0.6);
+            animation: pulseGlow 2.4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 18px rgba(72, 115, 255, 0.6);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(72, 115, 255, 0.95);
+                transform: scale(1.04);
+            }
+        }
+
+        .icon {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+        }
+
+        .icon_name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .menu_area ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 26px;
+        }
+
+        .menu_area li {
+            position: relative;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: color 0.25s ease;
+        }
+
+        .menu_area li::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            transition: width 0.25s ease;
+        }
+
+        .menu_area li:hover, .menu_area li.active {
+            color: var(--text-main);
+        }
+
+        .menu_area li:hover::after, .menu_area li.active::after {
+            width: 100%;
+        }
+
+        /* ---------- Hero / Main ---------- */
+        .content {
+            margin-top: 26px;
+        }
+
+        .main_content {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 28px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            background: rgba(24, 224, 196, 0.12);
+            color: var(--accent);
+            border: 1px solid rgba(24, 224, 196, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .badge_dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(24, 224, 196, 0.8);
+        }
+
+        .main_heading {
+            font-size: clamp(28px, 4vw, 36px);
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .main_heading span {
+            background: linear-gradient(120deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            max-width: 420px;
+            color: var(--text-muted);
+        }
+
+        .cta_row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .btn-primary, .btn-ghost, .btn-control {
+            padding: 9px 18px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 10px 28px rgba(76, 111, 255, 0.55);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary::before, .btn-ghost::before, .btn-control::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0.4),
+                transparent 40%,
+                transparent 60%,
+                rgba(255, 255, 255, 0.4)
+            );
+            transform: translateX(-120%);
+            transition: transform 0.55s ease;
+        }
+
+        .btn-primary:hover::before, .btn-ghost:hover::before, .btn-control:hover::before {
+            transform: translateX(120%);
+        }
+
+        .btn-ghost {
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(183, 185, 214, 0.5);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.7);
+            color: var(--text-main);
+        }
+
+        .btn-control {
+            margin: 10px 5px 0;
+            padding: 8px 16px;
+            font-size: 12px;
+            background: linear-gradient(135deg, var(--accent), #0fd4b0);
+            box-shadow: 0 8px 24px rgba(24, 224, 196, 0.4);
+        }
+
+        .btn-control.running {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        }
+
+        .timer-display {
+            font-size: clamp(36px, 8vw, 64px);
+            font-weight: 700;
+            color: var(--accent);
+            margin: 20px 0 10px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 20px rgba(24, 224, 196, 0.6);
+            animation: timerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes timerPulse {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(24, 224, 196, 0.4)); }
+            50% { filter: drop-shadow(0 0 20px rgba(24, 224, 196, 0.8)); }
+        }
+
+        .hero-card {
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.15), transparent 55%);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            transform: translateY(12px);
+            opacity: 0;
+            animation: cardRise 0.9s ease-out forwards 0.1s;
+        }
+
+        @keyframes cardRise {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            background: radial-gradient(circle at 0 0, rgba(24, 224, 196, 0.14), transparent 55%);
+            mix-blend-mode: screen;
+            opacity: 0.8;
+        }
+
+        .hero-card-main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-pill {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .hero-progress {
+            margin-top: 12px;
+        }
+
+        .hero-progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .hero-progress-bar {
+            margin-top: 6px;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.09);
+            overflow: hidden;
+        }
+
+        .hero-progress-fill {
+            height: 100%;
+            width: 78%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            position: relative;
+            transition: width 0.3s ease;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .hero-stat-pill {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(6, 9, 40, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .hero-stat-pill.glow {
+            box-shadow: 0 0 15px rgba(24, 224, 196, 0.6);
+            background: rgba(24, 224, 196, 0.2);
+            border-color: rgba(24, 224, 196, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: modalFade 0.3s ease;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* ---------- Sections ---------- */
+        .services_heading,
+        .about_us h2,
+        .gallery h2 {
+            margin-top: 40px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .service_box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px 16px 18px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            animation: fadeUp 0.7s ease forwards;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .service_box:hover {
+            transform: translateY(-5px);
+        }
+
+        .service_box:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .service_box::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(76, 111, 255, 0.1), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .service_box:hover::before {
+            opacity: 1;
+        }
+
+        .service_box h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .service_box p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .about_us {
+            margin-top: 26px;
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .about_us strong {
+            color: var(--text-main);
+        }
+
+        .gallery {
+            margin-top: 32px;
+        }
+
+        .gallery_images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+        }
+
+        .gallery_image {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            aspect-ratio: 4 / 3;
+            transform: scale(1);
+            filter: saturate(0.8) brightness(0.95);
+            transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .gallery_image:hover {
+            transform: scale(1.05) translateY(-3px);
+            filter: saturate(1.1) brightness(1.05);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 14px 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 740px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .main_content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                order: -1;
+            }
+        }
+
+        /* Install prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 15px 25px;
+            border-radius: 50px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(76, 111, 255, 0.4);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="icon_area">
+                <div class="icon_wrapper">
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <span class="icon_name">Study Sprint</span>
+            </div>
+
+            <nav class="menu_area">
+                <ul>
+                    <li class="active">Home</li>
+                    <li>Services</li>
+                    <li>About</li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="content">
+            <section class="main_content">
+                <div>
+                    <div class="badge">
+                        <span class="badge_dot"></span>
+                        Focus. Learn. Level Up.
+                    </div>
+                    <h2 class="main_heading">
+                        Turn every study session into a <span>sprint</span>.
+                    </h2>
+                    <p class="subtitle">
+                        Plan focused sessions, track progress, and stay motivated with a clean,
+                        minimal dashboard built for serious learners.
+                    </p>
+
+                    <div class="cta_row">
+                        <button class="btn-primary" id="startSprint">Start a 25‑min Sprint</button>
+                        <button class="btn-ghost" id="viewStreak">
+                            View your streak
+                            <span>🔥</span>
+                        </button>
+                    </div>
+                </div>
+
+                <aside class="hero-card">
+                    <div class="hero-card-main">
+                        <div class="hero-pill" id="timerMode">Pomodoro Mode • 25 min</div>
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+                        <div class="hero-progress">
+                            <div class="hero-progress-label">
+                                <span>Sprints today</span>
+                                <span id="sprintCount">3 / 8</span>
+                            </div>
+                            <div class="hero-progress-bar">
+                                <div class="hero-progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="hero-stat-pill" id="streakPill">Streak: 5 days</div>
+                            <div class="hero-stat-pill" id="totalTime">Deep work: 1h 45m</div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn-control" id="pauseBtn">⏸️ Pause</button>
+                            <button class="btn-control" id="resetBtn">🔄 Reset</button>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <h2 class="services_heading">Our Services</h2>
+            <section class="services">
+                <div class="service_box" data-modal="timer">
+                    <h3>Study Session Timer</h3>
+                    <p>25-min focused sprints with smart 5-min breaks. Perfect for deep work sessions.</p>
+                </div>
+                <div class="service_box" data-modal="plans">
+                    <h3>Personalized Study Plans</h3>
+                    <p>AI-powered plans based on your syllabus, deadlines, and learning style.</p>
+                </div>
+            </section>
+
+            <section class="about_us">
+                <h2>About Us</h2>
+                <p>
+                    At <strong>Study Sprint</strong>, we turn studying into a game you want to win. 
+                    Track streaks, earn rewards, and build unbreakable focus habits with our distraction-free interface.
+                </p>
+            </section>
+
+            <section class="gallery">
+                <h2>Gallery</h2>
+                <div class="gallery_images">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop" class="gallery_image" alt="Focused study session">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop" class="gallery_image" alt="Productive workspace">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop" class="gallery_image" alt="Study motivation">
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Thank you for visiting • Keep sprinting toward your goals ✨</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="streakModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('streakModal')">×</button>
+            <h2 style="color: var(--text-main); margin-bottom: 20px;">Your 🔥 Streak</h2>
+            <div id="streakContent" style="font-size: 48px; font-weight: 700; color: var(--accent); margin-bottom: 20px;">0 days</div>
+            <p style="color: var(--text-muted);">Keep it alive! Complete today's sprint.</p>
+        </div>
+    </div>
+
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('serviceModal')">×</button>
+            <div id="serviceContent"></div>
+        </div>
+    </div>
+
+    <!-- Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        Install Study Sprint for offline use! 🚀
+        <button onclick="installApp()" style="margin-left: 15px; padding: 5px 12px; font-size: 11px; background: rgba(255,255,255,0.2);">Install</button>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        class StudySprint {
+            constructor() {
+                this.timeLeft = 25 * 60;
+                this.isRunning = false;
+                this.timerId = null;
+                this.sprintsToday = 0;
+                this.streak = 0;
+                this.totalTime = 0;
+                this.lastSprintDate = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.loadData();
+                this.updateDisplay();
+                this.bindEvents();
+                this.updateStreakDisplay();
+                this.requestInstallPrompt();
+                this.animateOnScroll();
+            }
+
+            loadData() {
+                const data = JSON.parse(localStorage.getItem('studySprint') || '{}');
+                this.sprintsToday = data.sprintsToday || 0;
+                this.streak = data.streak || 0;
+                this.totalTime = data.totalTime || 0;
+                this.lastSprintDate = data.lastSprintDate || null;
+            }
+
+            saveData() {
+                localStorage.setItem('studySprint', JSON.stringify({
+                    sprintsToday: this.sprintsToday,
+                    streak: this.streak,
+                    totalTime: this.totalTime,
+                    lastSprintDate: this.lastSprintDate
+                }));
+            }
+
+            bindEvents() {
+                document.getElementById('startSprint').addEventListener('click', () => this.toggleTimer());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pauseTimer());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetTimer());
+                document.getElementById('viewStreak').addEventListener('click', () => this.showStreakModal());
+                
+                document.querySelectorAll('.service_box').forEach(box => {
+                    box.addEventListener('click', (e) => this.showServiceModal(e.currentTarget.dataset.modal));
+                });
+
+                document.querySelectorAll('.gallery_image').forEach(img => {
+                    img.addEventListener('click', () => this.showImageModal(img.src, img.alt));
+                });
+
+                document.querySelectorAll('.menu_area li').forEach((li, index) => {
+                    li.addEventListener('click', () => this.scrollToSection(index));
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && e.target === document.body) {
+                        e.preventDefault();
+                        this.toggleTimer();
+                    }
+                    if (e.code === 'KeyS') this.showStreakModal();
+                });
+            }
+
+            toggleTimer() {
+                if (!this.isRunning) {
+                    this.startTimer();
+                } else {
+                    this.pauseTimer();
+                }
+            }
+
+            startTimer() {
+                this.isRunning = true;
+                document.getElementById('startSprint').textContent = 'Sprint Running...';
+                document.getElementById('startSprint').classList.add('running');
+                document.getElementById('pauseBtn').classList.add('running');
+                
+                this.timerId = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateDisplay();
+                    
+                    if (this.timeLeft <= 0) {
+                        this.completeSprint();
+                    }
+                }, 1000);
+            }
+
+            pauseTimer() {
+                this.isRunning = false;
+                clearInterval(this.timerId);
+                document.getElementById('startSprint').textContent = 'Resume Sprint';
+                document.getElementById('startSprint').classList.remove('running');
+                document.getElementById('pauseBtn').classList.remove('running');
+            }
+
+            resetTimer() {
+                this.pauseTimer();
+                this.timeLeft = 25 * 60;
+                document.getElementById('startSprint').textContent = 'Start a 25‑min Sprint';
+                this.updateDisplay();
+            }
+
+            completeSprint() {
+                this.pauseTimer();
+                this.sprintsToday++;
+                this.totalTime += 25 * 60;
+                this.updateStreak();
+                
+                // Celebration!
+                this.celebrate();
+                
+                // Update UI
+                document.getElementById('sprintCount').textContent = `${this.sprintsToday} / 8`;
+                document.querySelector('#progressFill').style.width = `${Math.min((this.sprintsToday / 8) * 100, 100)}%`;
+                document.getElementById('startSprint').textContent = '🎉 Sprint Complete! Start Next';
+                
+                this.saveData();
+                this.updateTotalTimeDisplay();
+            }
+
+            updateStreak() {
+                const today = new Date().toDateString();
+                if (this.lastSprintDate === today) {
+                    return;
+                }
+                
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                
+                if (this.lastSprintDate === yesterday.toDateString()) {
+                    this.streak++;
+                } else if (this.lastSprintDate !== today) {
+                    this.streak = 1;
+                }
+                
+                this.lastSprintDate = today;
+                this.saveData();
+            }
+
+            updateStreakDisplay() {
+                document.getElementById('streakPill').textContent = `Streak: ${this.streak} days`;
+                if (this.streak >= 5) {
+                    document.getElementById('streakPill').classList.add('glow');
+                }
+            }
+
+            updateTotalTimeDisplay() {
+                const hours = Math.floor(this.totalTime / 3600);
+                const minutes = Math.floor((this.totalTime % 3600) / 60);
+                document.getElementById('totalTime').textContent = `Deep work: ${hours}h ${minutes}m`;
+            }
+
+            updateDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                document.getElementById('timerDisplay').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const progress = (25 * 60 - this.timeLeft) / (25 * 60);
+                document.querySelector('#progressFill').style.width = `${progress * 78}%`;
+            }
+
+            celebrate() {
+                // Multi-confetti explosion
+                confetti({
+                    particleCount: 150,
+                    spread: 90,
+                    origin: { y: 0.6 }
+                });
+                confetti({
+                    particleCount: 100,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 100,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+                
+                // Screen flash
+                document.body.style.animation = 'none';
+                document.body.style.background = 'radial-gradient(circle, #18e0c4 0%, #060714 70%)';
+                setTimeout(() => {
+                    document.body.style.background = '';
+                }, 200);
+                
+                // Victory sound (beep sequence)
+                this.playVictorySound();
+            }
+
+            playVictorySound() {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const playTone = (freq, duration) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                };
+                
+                playTone(800, 0.1);
+                setTimeout(() => playTone(1000, 0.1), 150);
+                setTimeout(() => playTone(1200, 0.3), 300);
+            }
+
+            showStreakModal() {
+                document.getElementById('streakContent').textContent = `${this.streak} days`;
+                document.getElementById('streakModal').style.display = 'block';
+            }
+
+            showServiceModal(type) {
+                const content = type === 'timer' ? 
+                    '<h3>🚀 Advanced Timer Features</h3><p>• 25/5 Pomodoro cycles<br>• Custom session lengths<br>• Auto-break detection<br>• Focus analytics</p>' :
+                    '<h3>📚 Smart Study Plans</h3><p>• Syllabus integration<br>• Deadline tracking<br>• Adaptive scheduling<br>• Progress predictions</p>';
+                document.getElementById('serviceContent').innerHTML = content;
+                document.getElementById('serviceModal').style.display = 'block';
+            }
+
+            showImageModal(src, alt) {
+                document.getElementById('serviceContent').innerHTML = 
+                    `<img src="${src}" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;"><p>${alt}</p>`;
+                document.getElementById('serviceModal').style.display = 'block';
+            }
+
+            scrollToSection(index) {
+                const sections = ['.main_content', '.services', '.about_us'];
+                document.querySelector(sections[index] || '.main_content').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+                document.querySelectorAll('.menu_area li').forEach((li, i) => {
+                    li.classList.toggle('active', i === index);
+                });
+            }
+
+            animateOnScroll() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animationPlayState = 'running';
+                        }
+                    });
+                });
+                document.querySelectorAll('.service_box').forEach(box => observer.observe(box));
+            }
+
+            requestInstallPrompt() {
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    document.getElementById('installPrompt').style.display = 'flex';
+                });
+            }
+        }
+
+        // Global modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function installApp() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then(() => {
+                    window.deferredPrompt = null;
+                    document.getElementById('installPrompt').style.display = 'none';
+                });
+            }
+        }
+
+        // Close modals on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            new StudySprint();
+        });
+
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
+                const CACHE_NAME = 'study-sprint-v1';
+                const urlsToCache = ['/', '/favicon.ico'];
+                
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+                
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(response => response || fetch(event.request))
+                    );
+                });
+            `));
+        }
+    </script>
+</body>
+</html>
